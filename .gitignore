@@ -34,3 +34,6 @@ Thumbs.db
 # Amplify
 amplify/
 .amplifyrc
+
+# Fichero de Variables de Entorno
+.env
