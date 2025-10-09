@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - npm install
     build:
       commands:
         - echo "PUBLIC_IS_MOCK"=$IS_MOCK >> .env
