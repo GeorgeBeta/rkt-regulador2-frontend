@@ -1,0 +1,37 @@
+---
+import Layout from '../components/Layout.tsx';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RKT Regulador - Inicio</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <Layout client:load currentPage="inicio">
+      <div class="dashboard">
+        <h1>Bienvenido a RKT Regulador</h1>
+        <div class="dashboard-cards">
+          <div class="card">
+            <h3>Subir Pedido</h3>
+            <p>Sube archivos PDF con los pedidos de la empresa</p>
+            <a href="/subir-pedido" class="btn">Ir a Subir</a>
+          </div>
+          <div class="card">
+            <h3>Ver Pedidos</h3>
+            <p>Consulta todos los pedidos procesados</p>
+            <a href="/ver-pedidos" class="btn">Ver Lista</a>
+          </div>
+          <div class="card">
+            <h3>Gestión de Usuarios</h3>
+            <p>Administra los usuarios del sistema</p>
+            <a href="/usuarios" class="btn">Gestionar</a>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  </body>
+</html>
