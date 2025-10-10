@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
+import React, { useState } from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
   currentPage?: string;
+  onNavigate?: (page: string) => void;
+  onLogout?: () => void;
 }
 
-export default function Layout({ children, currentPage }: LayoutProps) {
+export default function Layout({ children, currentPage, onNavigate, onLogout }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    setIsAuthenticated(apiService.isAuthenticated());
-  }, []);
-
-  const handleLogout = () => {
-    apiService.logout();
-    window.location.href = '/';
+  const handleNavigation = (page: string) => {
+    if (onNavigate) {
+      onNavigate(page);
+    }
+    setIsMenuOpen(false);
   };
 
-  if (isAuthenticated === null) {
-    return <div>{children}</div>;
-  }
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
 
-  if (!isAuthenticated) {
+  // Si no hay funciones de navegación, es el login
+  if (!onNavigate || !onLogout) {
     return <div>{children}</div>;
   }
 
@@ -40,10 +41,10 @@ export default function Layout({ children, currentPage }: LayoutProps) {
           </button>
         </div>
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <li><a href="/inicio" className={currentPage === 'inicio' ? 'active' : ''}>Inicio</a></li>
-          <li><a href="/subir-pedido" className={currentPage === 'subir-pedido' ? 'active' : ''}>Subir pedido</a></li>
-          <li><a href="/ver-pedidos" className={currentPage === 'ver-pedidos' ? 'active' : ''}>Ver pedidos</a></li>
-          <li><a href="/usuarios" className={currentPage === 'usuarios' ? 'active' : ''}>Usuarios</a></li>
+          <li><button onClick={() => handleNavigation('inicio')} className={`nav-btn ${currentPage === 'inicio' ? 'active' : ''}`}>Inicio</button></li>
+          <li><button onClick={() => handleNavigation('subir-pedido')} className={`nav-btn ${currentPage === 'subir-pedido' ? 'active' : ''}`}>Subir pedido</button></li>
+          <li><button onClick={() => handleNavigation('ver-pedidos')} className={`nav-btn ${currentPage === 'ver-pedidos' ? 'active' : ''}`}>Ver pedidos</button></li>
+          <li><button onClick={() => handleNavigation('usuarios')} className={`nav-btn ${currentPage === 'usuarios' ? 'active' : ''}`}>Usuarios</button></li>
           <li><button onClick={handleLogout} className="logout-btn">Salir</button></li>
         </ul>
       </nav>

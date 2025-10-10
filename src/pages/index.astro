@@ -1,6 +1,5 @@
 ---
-import Layout from '../components/Layout.tsx';
-import Login from '../components/Login.tsx';
+import App from '../components/App.tsx';
 ---
 
 <html lang="es">
@@ -8,12 +7,10 @@ import Login from '../components/Login.tsx';
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RKT Regulador - Login</title>
+    <title>RKT Regulador</title>
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body>
-    <Layout client:load>
-      <Login client:load />
-    </Layout>
+    <App client:load />
   </body>
 </html>

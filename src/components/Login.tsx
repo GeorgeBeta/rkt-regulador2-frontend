@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 
-export default function Login() {
+interface LoginProps {
+  onLogin?: () => void;
+}
+
+export default function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,8 +27,8 @@ export default function Login() {
 
     try {
       const result = await apiService.login(email, password);
-      if (result.success) {
-        window.location.href = '/inicio';
+      if (result.success && onLogin) {
+        onLogin();
       }
     } catch (err) {
       setError('Credenciales inválidas');

@@ -19,6 +19,7 @@ class ApiService {
   async login(email: string, password: string): Promise<{ success: boolean; token?: string }> {
     if (this.isMock && email === 'demo@rkt-regulador.com' && password === 'demo123') {
       localStorage.setItem('authToken', 'mock-token');
+      localStorage.setItem('currentPage', 'inicio');
       return { success: true, token: 'mock-token' };
     }
     
@@ -28,10 +29,19 @@ class ApiService {
 
   logout(): void {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('currentPage');
   }
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('authToken');
+  }
+
+  getCurrentPage(): string {
+    return localStorage.getItem('currentPage') || 'login';
+  }
+
+  setCurrentPage(page: string): void {
+    localStorage.setItem('currentPage', page);
   }
 
   // Subir pedidos
