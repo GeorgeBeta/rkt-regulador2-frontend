@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export default function Layout({ children, currentPage }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     setIsAuthenticated(apiService.isAuthenticated());
@@ -18,6 +18,10 @@ export default function Layout({ children, currentPage }: LayoutProps) {
     apiService.logout();
     window.location.href = '/';
   };
+
+  if (isAuthenticated === null) {
+    return <div>{children}</div>;
+  }
 
   if (!isAuthenticated) {
     return <div>{children}</div>;
