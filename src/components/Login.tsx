@@ -3,9 +3,10 @@ import { apiService } from '../services/api';
 
 interface LoginProps {
   onLogin?: () => void;
+  onGoToRegister?: () => void;
 }
 
-export default function Login({ onLogin }: LoginProps) {
+export default function Login({ onLogin, onGoToRegister }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -67,6 +68,12 @@ export default function Login({ onLogin }: LoginProps) {
             {loading ? 'Iniciando...' : 'Iniciar Sesión'}
           </button>
         </form>
+        <div className="auth-links">
+          <p>¿No tiene una cuenta?</p>
+          <button onClick={onGoToRegister} className="link-btn">
+            Regístrate
+          </button>
+        </div>
       </div>
     </div>
   );

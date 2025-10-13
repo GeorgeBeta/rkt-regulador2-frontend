@@ -44,6 +44,59 @@ class ApiService {
     localStorage.setItem('currentPage', page);
   }
 
+  // Registro de usuarios
+  async register(name: string, email: string, password: string): Promise<{ success: boolean; message?: string }> {
+    if (this.isMock) {
+      // Simular registro exitoso
+      return { success: true, message: 'Cuenta creada correctamente' };
+    }
+    
+    // TODO: Implementar llamada real a Cognito
+    const response = await fetch(`${this.baseUrl}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    
+    return response.json();
+  }
+
+  // Verificación de email
+  async verifyEmail(email: string, code: string): Promise<{ success: boolean; message?: string }> {
+    if (this.isMock) {
+      // Simular verificación exitosa con código 123456
+      if (code === '123456') {
+        return { success: true, message: 'Email verificado correctamente' };
+      }
+      throw new Error('Código inválido');
+    }
+    
+    // TODO: Implementar llamada real a Cognito
+    const response = await fetch(`${this.baseUrl}/auth/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    
+    return response.json();
+  }
+
+  // Reenviar código de verificación
+  async resendVerificationCode(email: string): Promise<{ success: boolean; message?: string }> {
+    if (this.isMock) {
+      return { success: true, message: 'Código reenviado' };
+    }
+    
+    // TODO: Implementar llamada real a Cognito
+    const response = await fetch(`${this.baseUrl}/auth/resend`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    
+    return response.json();
+  }
+
   // Subir pedidos
   async uploadPedido(file: File): Promise<{ success: boolean; message: string }> {
     if (this.isMock) {

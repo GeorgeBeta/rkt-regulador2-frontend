@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import Layout from './Layout';
 import Login from './Login';
+import Register from './Register';
+import VerifyEmail from './VerifyEmail';
 import FileUpload from './FileUpload';
 import PedidosList from './PedidosList';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [currentPage, setCurrentPage] = useState('login');
+  const [registrationEmail, setRegistrationEmail] = useState('');
 
   useEffect(() => {
     const authenticated = apiService.isAuthenticated();
@@ -21,6 +24,28 @@ export default function App() {
   const handleLogin = () => {
     setIsAuthenticated(true);
     setCurrentPage('inicio');
+  };
+
+  const handleGoToRegister = () => {
+    setCurrentPage('register');
+  };
+
+  const handleRegister = (email: string) => {
+    setRegistrationEmail(email);
+    setCurrentPage('verify-email');
+  };
+
+  const handleVerified = () => {
+    setIsAuthenticated(true);
+    setCurrentPage('inicio');
+  };
+
+  const handleBackToLogin = () => {
+    setCurrentPage('login');
+  };
+
+  const handleBackToRegister = () => {
+    setCurrentPage('register');
   };
 
   const handleNavigation = (page: string) => {
@@ -39,7 +64,14 @@ export default function App() {
   }
 
   if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
+    switch (currentPage) {
+      case 'register':
+        return <Register onRegister={handleRegister} onBackToLogin={handleBackToLogin} />;
+      case 'verify-email':
+        return <VerifyEmail email={registrationEmail} onVerified={handleVerified} onBackToRegister={handleBackToRegister} />;
+      default:
+        return <Login onLogin={handleLogin} onGoToRegister={handleGoToRegister} />;
+    }
   }
 
   const renderPage = () => {
