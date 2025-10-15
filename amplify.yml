@@ -7,9 +7,9 @@ frontend:
     build:
       commands:
         - echo "PUBLIC_IS_MOCK"=$IS_MOCK >> .env
-        - echo "PUBLIC_USER_POOL_ID=$USER_POOL_ID" >> .env
-        - echo "PUBLIC_USER_POOL_CLIENT_ID=$USER_POOL_CLIENT_ID" >> .env
-        - echo "PUBLIC_IDENTITY_POOL_ID=$IDENTITY_POOL_ID" >> .env
+        - echo "PUBLIC_USER_POOL_ID"=$USER_POOL_ID >> .env
+        - echo "PUBLIC_USER_POOL_CLIENT_ID"=$USER_POOL_CLIENT_ID >> .env
+        - echo "PUBLIC_IDENTITY_POOL_ID"=$IDENTITY_POOL_ID >> .env
         - npm run build
   artifacts:
     baseDirectory: dist
