@@ -1,3 +1,6 @@
+import { signUp, confirmSignUp, signIn, signOut, getCurrentUser, resendSignUpCode } from 'aws-amplify/auth';
+import '../lib/amplify';
+
 // Servicio centralizado para todas las llamadas API
 export interface User {
   email: string;
@@ -23,17 +26,44 @@ class ApiService {
       return { success: true, token: 'mock-token' };
     }
     
-    // TODO: Implementar llamada real a Cognito
-    throw new Error('Autenticación real no implementada aún');
+    try {
+      const { isSignedIn } = await signIn({ username: email, password });
+      if (isSignedIn) {
+        localStorage.setItem('currentPage', 'inicio');
+        return { success: true };
+      }
+      throw new Error('Login failed');
+    } catch (error: any) {
+      throw new Error(error.message || 'Error de autenticación');
+    }
   }
 
-  logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentPage');
+  async logout(): Promise<void> {
+    if (this.isMock) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentPage');
+      return;
+    }
+    
+    try {
+      await signOut();
+      localStorage.removeItem('currentPage');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
+  async isAuthenticated(): Promise<boolean> {
+    if (this.isMock) {
+      return !!localStorage.getItem('authToken');
+    }
+    
+    try {
+      await getCurrentUser();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   getCurrentPage(): string {
@@ -47,38 +77,57 @@ class ApiService {
   // Registro de usuarios
   async register(name: string, email: string, password: string): Promise<{ success: boolean; message?: string }> {
     if (this.isMock) {
-      // Simular registro exitoso
       return { success: true, message: 'Cuenta creada correctamente' };
     }
     
-    // TODO: Implementar llamada real a Cognito
-    const response = await fetch(`${this.baseUrl}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
-    
-    return response.json();
+    try {
+      console.log('Intentando registrar usuario:', { email, name });
+      
+      const { isSignUpComplete } = await signUp({
+        username: email,
+        password,
+        options: {
+          userAttributes: {
+            email,
+            name,
+          },
+        },
+      });
+      
+      console.log('Registro exitoso:', { isSignUpComplete });
+      
+      return { 
+        success: true, 
+        message: isSignUpComplete ? 'Cuenta creada correctamente' : 'Verificación requerida'
+      };
+    } catch (error: any) {
+      console.error('Error en registro:', error);
+      throw new Error(error.message || 'Error al crear la cuenta');
+    }
   }
 
   // Verificación de email
   async verifyEmail(email: string, code: string): Promise<{ success: boolean; message?: string }> {
     if (this.isMock) {
-      // Simular verificación exitosa con código 123456
       if (code === '123456') {
         return { success: true, message: 'Email verificado correctamente' };
       }
       throw new Error('Código inválido');
     }
     
-    // TODO: Implementar llamada real a Cognito
-    const response = await fetch(`${this.baseUrl}/auth/verify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code })
-    });
-    
-    return response.json();
+    try {
+      const { isSignUpComplete } = await confirmSignUp({
+        username: email,
+        confirmationCode: code,
+      });
+      
+      return { 
+        success: isSignUpComplete, 
+        message: 'Email verificado correctamente'
+      };
+    } catch (error: any) {
+      throw new Error(error.message || 'Código inválido o expirado');
+    }
   }
 
   // Reenviar código de verificación
@@ -87,14 +136,12 @@ class ApiService {
       return { success: true, message: 'Código reenviado' };
     }
     
-    // TODO: Implementar llamada real a Cognito
-    const response = await fetch(`${this.baseUrl}/auth/resend`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    
-    return response.json();
+    try {
+      await resendSignUpCode({ username: email });
+      return { success: true, message: 'Código reenviado correctamente' };
+    } catch (error: any) {
+      throw new Error(error.message || 'Error al reenviar el código');
+    }
   }
 
   // Subir pedidos

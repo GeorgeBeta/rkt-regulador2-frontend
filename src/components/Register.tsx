@@ -32,8 +32,14 @@ export default function Register({ onRegister, onBackToLogin }: RegisterProps) {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+    if (formData.password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    if (!passwordRegex.test(formData.password)) {
+      setError('La contraseña debe contener: mayúscula, minúscula, número y símbolo (@$!%*?&)');
       return;
     }
 
@@ -87,6 +93,9 @@ export default function Register({ onRegister, onBackToLogin }: RegisterProps) {
               onChange={handleChange}
               required
             />
+            <small className="password-help">
+              Mínimo 8 caracteres: mayúscula, minúscula, número y símbolo (@$!%*?&)
+            </small>
           </div>
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirmar Contraseña:</label>

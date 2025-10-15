@@ -364,6 +364,13 @@ table th {
   font-family: monospace;
 }
 
+.password-help {
+  display: block;
+  margin-top: 0.25rem;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .menu-toggle {

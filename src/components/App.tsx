@@ -13,12 +13,16 @@ export default function App() {
   const [registrationEmail, setRegistrationEmail] = useState('');
 
   useEffect(() => {
-    const authenticated = apiService.isAuthenticated();
-    setIsAuthenticated(authenticated);
+    const checkAuth = async () => {
+      const authenticated = await apiService.isAuthenticated();
+      setIsAuthenticated(authenticated);
+      
+      if (authenticated) {
+        setCurrentPage(apiService.getCurrentPage());
+      }
+    };
     
-    if (authenticated) {
-      setCurrentPage(apiService.getCurrentPage());
-    }
+    checkAuth();
   }, []);
 
   const handleLogin = () => {
@@ -53,8 +57,8 @@ export default function App() {
     apiService.setCurrentPage(page);
   };
 
-  const handleLogout = () => {
-    apiService.logout();
+  const handleLogout = async () => {
+    await apiService.logout();
     setIsAuthenticated(false);
     setCurrentPage('login');
   };
