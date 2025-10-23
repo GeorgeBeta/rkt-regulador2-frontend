@@ -10,6 +10,7 @@ frontend:
         - echo "PUBLIC_USER_POOL_ID"=$USER_POOL_ID >> .env
         - echo "PUBLIC_USER_POOL_CLIENT_ID"=$USER_POOL_CLIENT_ID >> .env
         - echo "PUBLIC_IDENTITY_POOL_ID"=$IDENTITY_POOL_ID >> .env
+        - echo "PUBLIC_SERVER_URL"=$SERVER_URL >> .env
         - npm run build
   artifacts:
     baseDirectory: dist

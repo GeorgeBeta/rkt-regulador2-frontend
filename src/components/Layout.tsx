@@ -42,7 +42,7 @@ export default function Layout({ children, currentPage, onNavigate, onLogout }: 
         </div>
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <li><button onClick={() => handleNavigation('inicio')} className={`nav-btn ${currentPage === 'inicio' ? 'active' : ''}`}>Inicio</button></li>
-          <li><button onClick={() => handleNavigation('subir-pedido')} className={`nav-btn ${currentPage === 'subir-pedido' ? 'active' : ''}`}>Subir pedido</button></li>
+          <li><button onClick={() => handleNavigation('gestionar-ficheros')} className={`nav-btn ${currentPage === 'gestionar-ficheros' ? 'active' : ''}`}>Ficheros</button></li>
           <li><button onClick={() => handleNavigation('ver-pedidos')} className={`nav-btn ${currentPage === 'ver-pedidos' ? 'active' : ''}`}>Ver pedidos</button></li>
           <li><button onClick={() => handleNavigation('usuarios')} className={`nav-btn ${currentPage === 'usuarios' ? 'active' : ''}`}>Usuarios</button></li>
           <li><button onClick={handleLogout} className="logout-btn">Salir</button></li>

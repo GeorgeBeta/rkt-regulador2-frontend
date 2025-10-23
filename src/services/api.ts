@@ -144,24 +144,56 @@ class ApiService {
     }
   }
 
+  // Obtener ID del usuario actual
+  async getCurrentUserId(): Promise<string> {
+    if (this.isMock) {
+      return 'mock-user-id';
+    }
+    
+    try {
+      const user = await getCurrentUser();
+      return user.userId;
+    } catch {
+      throw new Error('Usuario no autenticado');
+    }
+  }
+
   // Subir pedidos
   async uploadPedido(file: File): Promise<{ success: boolean; message: string }> {
     if (this.isMock) {
       return { success: true, message: 'Archivo subido correctamente (mock)' };
     }
     
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await fetch(`${this.baseUrl}/pedidos/upload`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: formData
-    });
-    
-    return response.json();
+    try {
+      const userId = await this.getCurrentUserId();
+      const serverUrl = import.meta.env.PUBLIC_SERVER_URL;
+      
+      const filename = file.name;
+      const ordername = filename.match(/PV\d{7}/)?.[0];
+      
+      if (!ordername) {
+        throw new Error('El archivo no contiene un número de pedido válido (formato: PV seguido de 7 dígitos)');
+      }
+
+      const response = await fetch(`${serverUrl}/filepdfs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "filePdfName": ordername,
+          "userId": userId
+        })
+      });
+      
+      if (response.ok) {
+        return { success: true, message: 'Archivo procesado correctamente' };
+      } else {
+        throw new Error('Error en el servidor');
+      }
+    } catch (error: any) {
+      throw new Error(error.message || 'Error al procesar el archivo');
+    }
   }
 
   // Obtener pedidos

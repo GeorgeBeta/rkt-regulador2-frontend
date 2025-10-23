@@ -38,7 +38,7 @@ export default function FileUpload() {
 
   return (
     <div className="file-upload">
-      <h2>Subir Pedido</h2>
+      <h2>Gestionar Ficheros</h2>
       <div className="upload-area">
         <input
           type="file"

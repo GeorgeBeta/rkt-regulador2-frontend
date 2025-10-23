@@ -86,10 +86,10 @@ export default function App() {
             <h1>Bienvenido a RKT Regulador</h1>
             <div className="dashboard-cards">
               <div className="card">
-                <h3>Subir Pedido</h3>
+                <h3>Gestionar Ficheros</h3>
                 <p>Sube archivos PDF con los pedidos de la empresa</p>
-                <button className="btn" onClick={() => handleNavigation('subir-pedido')}>
-                  Ir a Subir
+                <button className="btn" onClick={() => handleNavigation('gestionar-ficheros')}>
+                  Ficheros
                 </button>
               </div>
               <div className="card">
@@ -109,7 +109,7 @@ export default function App() {
             </div>
           </div>
         );
-      case 'subir-pedido':
+      case 'gestionar-ficheros':
         return <FileUpload />;
       case 'ver-pedidos':
         return <PedidosList />;
