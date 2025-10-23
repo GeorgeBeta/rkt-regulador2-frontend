@@ -14,6 +14,13 @@ export interface Pedido {
   status: string;
 }
 
+export interface FilePDF {
+  filePdfId: string;
+  filePDFName: string;
+  createdAt: string;
+  completed: boolean;
+}
+
 class ApiService {
   private baseUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000/api';
   private isMock = import.meta.env.PUBLIC_IS_MOCK === 'true';
@@ -212,6 +219,57 @@ class ApiService {
     });
     
     return response.json();
+  }
+
+  // Obtener ficheros PDF
+  async getFilePDFs(): Promise<FilePDF[]> {
+    if (this.isMock) {
+      return [
+        { filePdfId: '1', filePDFName: 'PV2506918', createdAt: '2024-01-15T10:30:00Z', completed: true },
+        { filePdfId: '2', filePDFName: 'PV2506919', createdAt: '2024-01-16T14:20:00Z', completed: false }
+      ];
+    }
+    
+    const serverUrl = import.meta.env.PUBLIC_SERVER_URL;
+    const response = await fetch(`${serverUrl}/filepdfs`, {
+      method: 'GET'
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Datos recibidos del servidor:', data);
+      return data;
+    }
+    throw new Error('Error al obtener los ficheros');
+  }
+
+  // Eliminar fichero PDF
+  async deleteFilePDF(filePDFId: string): Promise<{ success: boolean; message: string }> {
+    if (this.isMock) {
+      return { success: true, message: 'Archivo eliminado correctamente (mock)' };
+    }
+    
+    try {
+      const serverUrl = import.meta.env.PUBLIC_SERVER_URL;
+      console.log('Eliminando archivo:', filePDFId, 'URL:', `${serverUrl}/filepdfs/${filePDFId}`);
+      
+      const response = await fetch(`${serverUrl}/filepdfs/${filePDFId}`, {
+        method: 'DELETE'
+      });
+      
+      console.log('Respuesta DELETE:', response.status, response.statusText);
+      
+      if (response.ok) {
+        return { success: true, message: 'Archivo eliminado correctamente' };
+      }
+      
+      const errorText = await response.text();
+      console.error('Error del servidor:', errorText);
+      throw new Error(`Error del servidor: ${response.status} - ${errorText}`);
+    } catch (error: any) {
+      console.error('Error en deleteFilePDF:', error);
+      throw new Error(error.message || 'Error al eliminar el archivo');
+    }
   }
 
   // Gestión de usuarios (placeholder)

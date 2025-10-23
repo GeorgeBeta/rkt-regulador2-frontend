@@ -206,17 +206,39 @@ button[type="submit"]:disabled {
   background: #2980b9;
 }
 
-/* File Upload */
-.file-upload h2 {
+/* File Management */
+.file-management h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.file-management-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  height: calc(100vh - 200px);
+}
+
+.upload-section,
+.list-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+.upload-section h3,
+.list-section h3 {
   margin-bottom: 1.5rem;
   color: #2c3e50;
 }
 
 .upload-area {
-  background: white;
-  padding: 2rem;
+  background: #f8f9fa;
+  padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 2px dashed #dee2e6;
 }
 
 .file-info {
@@ -243,6 +265,35 @@ button[type="submit"]:disabled {
 .file-info button:disabled {
   background: #bdc3c7;
   cursor: not-allowed;
+}
+
+/* File List */
+.file-list table {
+  margin-top: 0;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+.status.completed {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.status.pending {
+  color: #f39c12;
+  font-weight: 500;
 }
 
 /* Pedidos List */
@@ -407,6 +458,16 @@ table th {
 
   .dashboard-cards {
     grid-template-columns: 1fr;
+  }
+
+  .file-management-container {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .upload-section,
+  .list-section {
+    max-height: 400px;
   }
 
   .login-form {
