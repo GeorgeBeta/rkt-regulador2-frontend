@@ -1,4 +1,4 @@
-import { signUp, confirmSignUp, signIn, signOut, getCurrentUser, resendSignUpCode } from 'aws-amplify/auth';
+import { signUp, confirmSignUp, signIn, signOut, getCurrentUser, resendSignUpCode, fetchAuthSession } from 'aws-amplify/auth';
 import '../lib/amplify';
 
 // Servicio centralizado para todas las llamadas API
@@ -151,6 +151,20 @@ class ApiService {
     }
   }
 
+  // Obtener token JWT de Cognito
+  async getAuthToken(): Promise<string> {
+    if (this.isMock) {
+      return 'mock-token';
+    }
+    
+    try {
+      const session = await fetchAuthSession();
+      return session.tokens?.idToken?.toString() || '';
+    } catch {
+      throw new Error('Usuario no autenticado');
+    }
+  }
+
   // Obtener ID del usuario actual
   async getCurrentUserId(): Promise<string> {
     if (this.isMock) {
@@ -182,10 +196,13 @@ class ApiService {
         throw new Error('El archivo no contiene un número de pedido válido (formato: PV seguido de 7 dígitos)');
       }
 
+      const token = await this.getAuthToken();
+      
       const response = await fetch(`${serverUrl}/filepdfs`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           "filePdfName": ordername,
@@ -231,8 +248,13 @@ class ApiService {
     }
     
     const serverUrl = import.meta.env.PUBLIC_SERVER_URL;
+    const token = await this.getAuthToken();
+    
     const response = await fetch(`${serverUrl}/filepdfs`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
     
     if (response.ok) {
@@ -253,8 +275,13 @@ class ApiService {
       const serverUrl = import.meta.env.PUBLIC_SERVER_URL;
       console.log('Eliminando archivo:', filePDFId, 'URL:', `${serverUrl}/filepdfs/${filePDFId}`);
       
+      const token = await this.getAuthToken();
+      
       const response = await fetch(`${serverUrl}/filepdfs/${filePDFId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       
       console.log('Respuesta DELETE:', response.status, response.statusText);
